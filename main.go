@@ -52,12 +52,20 @@ func main() {
 			if bytes, err := ioutil.ReadAll(resp.Body); err == nil {
 
 				var fname = outDir + "/" + c.Key
+				var fnameHeaders = outDir + "/" + c.Key + "-headers.txt"
+				var headerstr = ""
 
 				ext, ok := exts[resp.Header.Get("Content-Type")]
+
+				for k, v := range resp.Header {
+					headerstr += k + " => " + hel.StrArrToStr(v, "<->") + "\n"
+				}
 
 				if ok {
 					fname += "." + ext
 				}
+
+				hel.StrToFile(fnameHeaders, headerstr)
 
 				if err := hel.BytesToFile(fname, bytes); err == nil {
 					hel.Pl("Wrote -", fname)
